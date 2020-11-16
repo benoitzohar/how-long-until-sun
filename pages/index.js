@@ -6,7 +6,7 @@ import moment from "moment";
 
 const COLORS = ["#3AA3F7", "#f58442", "#479A5F", "#A61006"];
 
-const LEAVE_DATE = moment("2020-12-19 8:00:00");
+const LEAVE_DATE = moment("2020-12-19 08:00:00");
 
 function getTimeLeft() {
   const now = moment();
