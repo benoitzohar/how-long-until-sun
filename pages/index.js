@@ -1,65 +1,57 @@
+//@ts-check
+
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useState, useEffect } from "react";
+import moment from "moment";
+
+const COLORS = ["#3AA3F7", "#f58442", "#479A5F", "#A61006"];
+
+const LEAVE_DATE = moment("2020-12-19 8:00:00");
+
+function getTimeLeft() {
+  const now = moment();
+  const weeks = LEAVE_DATE.diff(now, "weeks");
+  const days = LEAVE_DATE.diff(now, "days") - weeks * 7;
+  const hours = LEAVE_DATE.diff(now, "hours") - weeks * 7 * 24 - days * 24;
+  const minutes =
+    LEAVE_DATE.diff(now, "minutes") -
+    weeks * 7 * 24 * 60 -
+    days * 24 * 60 -
+    hours * 60;
+  const seconds =
+    LEAVE_DATE.diff(now, "seconds") -
+    weeks * 7 * 24 * 60 * 60 -
+    days * 24 * 60 * 60 -
+    hours * 60 * 60 -
+    minutes * 60;
+
+  return `${days} day${days > 1 ?
+    "s" : ""}, ${hours} hour${hours > 1 ? "s" : ""}, ${minutes} minute${minutes >
+      1 ? "s" : ""} et ${seconds} second${seconds > 1 ? "s" : ""}`;
+}
+
 
 export default function Home() {
+  const [colorKey, setColorKey] = useState(0);
+  const [time, setTime] = useState(getTimeLeft());
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setColorKey(colorKey === COLORS.length - 1 ? 0 : colorKey + 1);
+    }, 2000);
+    return () => clearInterval(t);
+  }, [colorKey]);
+
+  useEffect(() => {
+    setInterval(() => {
+      setTime(getTimeLeft());
+    }, 1000);
+  }, []);
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+    <div className="App" style={{ backgroundColor: COLORS[colorKey] }}>
+      <h1>{time} until sun!</h1>
+      <h1><span role="img" aria-label="heart">☀️🏖</span></h1>
     </div>
-  )
+  );
 }
