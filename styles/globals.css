@@ -16,6 +16,7 @@ code {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  box-sizing: border-box;
   align-items: center;
   height: 100vh;
   color: white;
