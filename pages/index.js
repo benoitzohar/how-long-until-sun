@@ -8,6 +8,13 @@ const COLORS = ["#3AA3F7", "#f58442", "#479A5F", "#A61006"];
 
 const LEAVE_DATE = moment("2020-12-19 08:00:00");
 
+function asStr(v, title) {
+  if (!v) {
+    return '';
+  }
+  return `${v} ${title}${v > 1 ? "s" : ""}`;
+}
+
 function getTimeLeft() {
   const now = moment();
   const weeks = LEAVE_DATE.diff(now, "weeks");
@@ -25,9 +32,16 @@ function getTimeLeft() {
     hours * 60 * 60 -
     minutes * 60;
 
-  return `${days} day${days > 1 ?
-    "s" : ""}, ${hours} hour${hours > 1 ? "s" : ""}, ${minutes} minute${minutes >
-      1 ? "s" : ""} et ${seconds} second${seconds > 1 ? "s" : ""}`;
+  const res = [
+    [weeks, "week"],
+    [days, "day"],
+    [hours, "hour"],
+    [minutes, "minute"],
+    [seconds, "second"]
+  ].map(([v, t]) => asStr(v, t));
+  const last = res.pop();
+
+  return `${res.join(', ')} and ${last}`;
 }
 
 
@@ -49,9 +63,12 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="App" style={{ backgroundColor: COLORS[colorKey] }}>
-      <h1>{time} until sun!</h1>
-      <h1><span role="img" aria-label="heart">☀️🏖</span></h1>
-    </div>
+    <>
+      <Head><title>☀️ How long until the sun?</title></Head>
+      <div className="App" style={{ backgroundColor: COLORS[colorKey] }}>
+        <h1>{time} until sun!</h1>
+        <h1><span role="img" aria-label="heart">☀️🏖</span></h1>
+      </div>
+    </>
   );
 }
