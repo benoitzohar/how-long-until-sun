@@ -1,6 +1,6 @@
 //@ts-check
 
-import Head from 'next/head'
+import Head from "next/head";
 import { useState, useEffect } from "react";
 import moment from "moment";
 
@@ -10,7 +10,7 @@ const LEAVE_DATE = moment("2020-12-19 08:00:00");
 
 function asStr(v, title) {
   if (!v) {
-    return '';
+    return "";
   }
   return `${v} ${title}${v > 1 ? "s" : ""}`;
 }
@@ -37,13 +37,15 @@ function getTimeLeft() {
     [days, "day"],
     [hours, "hour"],
     [minutes, "minute"],
-    [seconds, "second"]
-  ].map(([v, t]) => asStr(v, t));
+    [seconds, "second"],
+  ]
+    .map(([v, t]) => asStr(v, t))
+    .filter((a) => !!a);
+
   const last = res.pop();
 
-  return `${res.join(', ')} and ${last}`;
+  return `${res.join(", ")} and ${last}`;
 }
-
 
 export default function Home() {
   const [colorKey, setColorKey] = useState(0);
@@ -64,10 +66,16 @@ export default function Home() {
 
   return (
     <>
-      <Head><title>☀️ How long until the sun?</title></Head>
+      <Head>
+        <title>☀️ How long until the sun?</title>
+      </Head>
       <div className="App" style={{ backgroundColor: COLORS[colorKey] }}>
         <h1>{time} until sun!</h1>
-        <h1><span role="img" aria-label="heart">☀️🏖</span></h1>
+        <h1>
+          <span role="img" aria-label="heart">
+            ☀️🏖
+          </span>
+        </h1>
       </div>
     </>
   );
