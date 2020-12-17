@@ -42,14 +42,20 @@ function getTimeLeft() {
     .map(([v, t]) => asStr(v, t))
     .filter((a) => !!a);
 
-  const last = res.pop();
-
-  return `${res.join(", ")} and ${last}`;
+  if (res.length === 1) {
+    return res;
+  } else if (!res.length) {
+    return;
+  } else {
+    const last = res.pop();
+    return `${res.join(", ")} and ${last}`;
+  }
 }
 
 export default function Home() {
   const [colorKey, setColorKey] = useState(0);
   const [time, setTime] = useState(getTimeLeft());
+  const [done, setDone] = useState(LEAVE_DATE < moment());
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -59,10 +65,18 @@ export default function Home() {
   }, [colorKey]);
 
   useEffect(() => {
-    setInterval(() => {
-      setTime(getTimeLeft());
+    if (done) {
+      return;
+    }
+    const t = setInterval(() => {
+      if (LEAVE_DATE < moment()) {
+        setDone(true);
+      } else {
+        setTime(getTimeLeft());
+      }
     }, 1000);
-  }, []);
+    return () => clearInterval(t);
+  }, [done]);
 
   return (
     <>
@@ -70,7 +84,11 @@ export default function Home() {
         <title>☀️ How long until the sun?</title>
       </Head>
       <div className="App" style={{ backgroundColor: COLORS[colorKey] }}>
-        <h1>{time} until sun!</h1>
+        {done ? (
+          <h1 style={{ fontSize: "70px" }}>OMG! This is it! Bye bye cold!</h1>
+        ) : time ? (
+          <h1>{time} until sun!</h1>
+        ) : null}
         <h1>
           <span role="img" aria-label="heart">
             ☀️🏖
